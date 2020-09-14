@@ -12,7 +12,7 @@ import (
 //TestSessionValidator :: test if model pass in all validations
 func TestSessionValidator(t *testing.T) {
 
-	var model = model.SessionModel{
+	var model = model.Session{
 		ID:          123456,
 		IDWorkspace: 123456789,
 		Description: "Este é um exmplo de teste para criação de uma seção",
@@ -32,7 +32,7 @@ func TestSessionValidator(t *testing.T) {
 
 //TestSessionDescriptionGreatherThan255Chars :: test with send greather than 255 characteres to return a message error
 func TestSessionDescriptionGreatherThan255Chars(t *testing.T) {
-	var model = model.SessionModel{
+	var model = model.Session{
 		ID:          123456,
 		IDWorkspace: 123456789,
 		Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae congue eu consequat ac felis donec et. Massa massa ultricies mi quis hendrerit dolor. Rhoncus aenean vel elit scelerisque. Imperdiet nulla malesuada pellentesque elit. Duis at tellus at urna condimentum mattis pellentesque id nibh. Elementum facilisis leo vel fringilla est ullamcorper eget nulla facilisi. Ornare arcu dui vivamus arcu. Nulla pellentesque dignissim enim sit amet venenatis. Nam libero justo laoreet sit amet cursus sit amet dictum. Sit amet aliquam id diam maecenas. Metus aliquam eleifend mi in nulla. Pellentesque elit eget gravida cum sociis. Risus pretium quam vulputate dignissim suspendisse in est ante.",
@@ -56,7 +56,7 @@ func TestSessionDescriptionGreatherThan255Chars(t *testing.T) {
 
 //TestSessionDescriptionLessThan30Chars :: test with send less than 50 characteres to return a message error
 func TestSessionDescriptionLessThan30Chars(t *testing.T) {
-	var model = model.SessionModel{
+	var model = model.Session{
 		ID:          123456,
 		IDWorkspace: 123456789,
 		Description: "Este é um exemplo",
@@ -80,7 +80,7 @@ func TestSessionDescriptionLessThan30Chars(t *testing.T) {
 
 //TestSessionNameGreatherThan50Chars :: test with send greather than 50 characteres to return a message error
 func TestSessionNameGreatherThan50Chars(t *testing.T) {
-	var model = model.SessionModel{
+	var model = model.Session{
 		ID:          123456,
 		IDWorkspace: 123456789,
 		Description: "Este é um exmplo de teste para criação de uma seção",
@@ -104,7 +104,7 @@ func TestSessionNameGreatherThan50Chars(t *testing.T) {
 
 //TestSessionNameLessThan10Chars :: test with send less than 10 characteres to return a message error
 func TestSessionNameLessThan10Chars(t *testing.T) {
-	var model = model.SessionModel{
+	var model = model.Session{
 		ID:          123456,
 		IDWorkspace: 123456789,
 		Description: "Este é um exmplo de teste para criação de uma seção",

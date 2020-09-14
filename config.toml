@@ -1,2 +1,2 @@
-server="postgresql://maxroach@localhost:26257/bank?sslmode=disable"
+server="postgresql://root@localhost:26257/opt?sslmode=disable"
 logMode=false

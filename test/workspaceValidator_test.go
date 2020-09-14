@@ -12,7 +12,7 @@ import (
 //TestWorkspaceValidator :: test if model pass in all validations
 func TestWorkspaceValidator(t *testing.T) {
 
-	var model = model.WorkspaceModel{
+	var model = model.Workspace{
 		ID:            123456,
 		IDFacilitator: 123456789,
 		Description:   "Este é um exmplo de teste para criação de workspace",
@@ -32,7 +32,7 @@ func TestWorkspaceValidator(t *testing.T) {
 
 //TestWorkspaceDescriptionGreatherThan255Chars :: test with send greather than 255 characteres to return a message error
 func TestWorkspaceDescriptionGreatherThan255Chars(t *testing.T) {
-	var model = model.WorkspaceModel{
+	var model = model.Workspace{
 		ID:            123456,
 		IDFacilitator: 123456789,
 		Description:   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae congue eu consequat ac felis donec et. Massa massa ultricies mi quis hendrerit dolor. Rhoncus aenean vel elit scelerisque. Imperdiet nulla malesuada pellentesque elit. Duis at tellus at urna condimentum mattis pellentesque id nibh. Elementum facilisis leo vel fringilla est ullamcorper eget nulla facilisi. Ornare arcu dui vivamus arcu. Nulla pellentesque dignissim enim sit amet venenatis. Nam libero justo laoreet sit amet cursus sit amet dictum. Sit amet aliquam id diam maecenas. Metus aliquam eleifend mi in nulla. Pellentesque elit eget gravida cum sociis. Risus pretium quam vulputate dignissim suspendisse in est ante.",
@@ -57,7 +57,7 @@ func TestWorkspaceDescriptionGreatherThan255Chars(t *testing.T) {
 
 //TestWorkspaceDescriptionLessThan30Chars :: test with send less than 50 characteres to return a message error
 func TestWorkspaceDescriptionLessThan30Chars(t *testing.T) {
-	var model = model.WorkspaceModel{
+	var model = model.Workspace{
 		ID:            123456,
 		IDFacilitator: 123456789,
 		Description:   "Este é um exemplo",
@@ -81,7 +81,7 @@ func TestWorkspaceDescriptionLessThan30Chars(t *testing.T) {
 
 //TestWorkspaceNameGreatherThan50Chars :: test with send greather than 50 characteres to return a message error
 func TestWorkspaceNameGreatherThan50Chars(t *testing.T) {
-	var model = model.WorkspaceModel{
+	var model = model.Workspace{
 		ID:            123456,
 		IDFacilitator: 123456789,
 		Description:   "Este é um exemplo",
@@ -105,7 +105,7 @@ func TestWorkspaceNameGreatherThan50Chars(t *testing.T) {
 
 //TestWorkspaceNameLessThan10Chars :: test with send less than 10 characteres to return a message error
 func TestWorkspaceNameLessThan10Chars(t *testing.T) {
-	var model = model.WorkspaceModel{
+	var model = model.Workspace{
 		ID:            123456,
 		IDFacilitator: 123456789,
 		Description:   "Este é um exemplo",
