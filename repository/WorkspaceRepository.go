@@ -33,16 +33,19 @@ func (wr *WorkspaceRepository) SaveWorkspace(workspace model.Workspace) (model.W
 }
 
 // UpdateWorkspace update the workspace data in database
-func (wr *WorkspaceRepository) UpdateWorkspace(workspace model.Workspace) (bool, error) {
+func (wr *WorkspaceRepository) UpdateWorkspace(workspace model.Workspace) (model.Workspace, error) {
 	// updates the conlumns od database
-	db := wr.db.Where("id = ? ", workspace.ID).UpdateColumns(model.Workspace{Description: workspace.Description, Name: workspace.Name, UpdatedBY: workspace.UpdatedBY, UpdatedAt: time.Now()})
+	db := wr.db.Model(&workspace).Where("id = ? ", workspace.ID).UpdateColumns(model.Workspace{Description: workspace.Description, Name: workspace.Name, UpdatedBY: workspace.UpdatedBY, UpdatedAt: time.Now()})
 
 	// checks if database return errror
 	if db.Error != nil {
-		return false, db.Error
+		return model.Workspace{}, db.Error
 	}
 
-	return true, nil
+	// convert the interface response in struct
+	err := converter.ConverterInterfaceTOStruct(db.Value, &workspace)
+
+	return workspace, err
 }
 
 // DeleteWorkspace delete the workspace data in database

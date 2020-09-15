@@ -54,6 +54,40 @@ func TestSaveWorkspace(t *testing.T) {
 	}
 }
 
+func TestUpdateWorkspace(t *testing.T) {
+	var ID int
+	// Initilize a repository with a connection of database
+	wr := repository.NewWorkspaceRepository(db)
+
+	// Find all workspaces in database
+	workspaces, _ := wr.FindWorkspaceByCreatedBy("lhsribas")
+
+	// Select the first workspace and get your ID
+	for _, v := range workspaces {
+		ID = v.ID
+		break
+	}
+	// Find a workspace by a specific ID
+	workspace, err := wr.FindWorkspaceByID(ID)
+
+	workspace.Description = "Novo tema para discutir sobre a alteração das informações"
+	workspace.Name = "Test Update"
+	workspace.UpdatedAt = time.Now()
+	workspace.UpdatedBY = "lhsribas2"
+
+	response, err := wr.UpdateWorkspace(workspace)
+
+	// Verify if the test are ok
+	if err != nil || workspace.ID != ID {
+		t.Fail()
+	}
+
+	// compare the fields with information returned of database
+	if response.Name != workspace.Name || response.Description != workspace.Description || response.UpdatedBY != workspace.UpdatedBY {
+		t.Fail()
+	}
+}
+
 func TestFindWorkspaceByCreatedBy(t *testing.T) {
 	// Initilize a repository with a connection of database
 	wr := repository.NewWorkspaceRepository(db)
