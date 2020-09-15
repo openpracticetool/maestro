@@ -46,13 +46,10 @@ func TestWorkspaceDescriptionGreatherThan255Chars(t *testing.T) {
 	if err := validators.ValidateStruct(model); err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			if err.Field() == "Description" {
-				return
-			} else {
-				t.Error("The test dont pass in the requirements")
+				t.Fail()
 			}
 		}
 	}
-
 }
 
 //TestWorkspaceDescriptionLessThan30Chars :: test with send less than 50 characteres to return a message error
@@ -70,10 +67,8 @@ func TestWorkspaceDescriptionLessThan30Chars(t *testing.T) {
 
 	if err := validators.ValidateStruct(model); err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
-			if err.Field() == "Description" {
-				return
-			} else {
-				t.Error("The test dont pass in the requirements")
+			if err.Field() != "Description" {
+				t.Fail()
 			}
 		}
 	}
@@ -94,10 +89,8 @@ func TestWorkspaceNameGreatherThan50Chars(t *testing.T) {
 
 	if err := validators.ValidateStruct(model); err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
-			if err.Field() == "Name" {
-				return
-			} else {
-				t.Error("The test dont pass in the requirements")
+			if err.Field() != "Name" {
+				t.Fail()
 			}
 		}
 	}
@@ -118,10 +111,8 @@ func TestWorkspaceNameLessThan10Chars(t *testing.T) {
 
 	if err := validators.ValidateStruct(model); err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
-			if err.Field() == "Name" {
-				return
-			} else {
-				t.Error("The test dont pass in the requirements")
+			if err.Field() != "Name" {
+				t.Fail()
 			}
 		}
 	}
