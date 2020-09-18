@@ -11,6 +11,7 @@ import (
 
 var database = repository.Database{}
 var workspace = model.Workspace{}
+var session = model.Session{}
 
 var db *gorm.DB
 
@@ -47,7 +48,7 @@ func TestSaveWorkspace(t *testing.T) {
 
 	// Initilize a repository with a connection of database
 	wr := repository.NewWorkspaceRepository(db)
-	_, err := wr.SaveWorkspace(model)
+	workspace, err := wr.SaveWorkspace(model)
 
 	if err != nil && workspace.ID > 0 {
 		t.Fail()
@@ -55,7 +56,7 @@ func TestSaveWorkspace(t *testing.T) {
 }
 
 func TestUpdateWorkspace(t *testing.T) {
-	var ID int
+	var ID = workspace.ID
 	// Initilize a repository with a connection of database
 	wr := repository.NewWorkspaceRepository(db)
 
@@ -68,7 +69,7 @@ func TestUpdateWorkspace(t *testing.T) {
 		break
 	}
 	// Find a workspace by a specific ID
-	workspace, err := wr.FindWorkspaceByID(ID)
+	workspace, err := wr.FindWorkspaceByID(workspace.ID)
 
 	workspace.Description = "Novo tema para discutir sobre a alteração das informações"
 	workspace.Name = "Test Update"
@@ -119,4 +120,49 @@ func TestFindWorkspaceByID(t *testing.T) {
 	if err != nil || workspace.ID != ID {
 		t.Fail()
 	}
+}
+
+func TestDeleteWorkspaceByID(t *testing.T) {
+
+}
+
+func TestSaveSession(t *testing.T) {
+	sr := repository.NewSessionRespository(db)
+
+	var model = model.Session{
+		IDWorkspace: workspace.ID,
+		Description: "Este é um exmplo de teste para criação de uma seção",
+		Name:        "Lean Coffee table",
+		UpdatedAt:   time.Now(),
+		CreatedAt:   time.Now(),
+		UpdatedBY:   "lhsribas",
+		CreatedBy:   "lhsribas",
+	}
+
+	// save the session in database
+	_, err := sr.SaveSession(model)
+
+	// check if returns some error and fail the test
+	if err != nil && workspace.ID > 0 {
+		t.Fail()
+	}
+}
+
+func TestUpdateSession(t *testing.T) {
+	repository.NewSessionRespository(db)
+
+}
+
+func TestFindSessionByID(t *testing.T) {
+	repository.NewSessionRespository(db)
+
+}
+
+func TestFindSessionByWorkspaceID(t *testing.T) {
+	repository.NewSessionRespository(db)
+
+}
+
+func TestDeleteSessionID(t *testing.T) {
+
 }
