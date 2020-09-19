@@ -8,7 +8,6 @@ import (
 
 	// Import GORM-related packages.
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/lib/pq"
 	"github.com/openpracticetool/maestro/model"
 )
@@ -85,7 +84,7 @@ func runTransaction(db *gorm.DB, fn txnFunc) error {
 				// (A.K.A. exponential backoff).
 				txn.Rollback()
 				var sleepMs = math.Pow(2, float64(retries)) * 100 * (rand.Float64() + 0.5)
-				fmt.Printf("Hit 40001 transaction retry error, sleeping %s milliseconds\n", sleepMs)
+				fmt.Printf("Hit 40001 transaction retry error, sleeping %f milliseconds\n", sleepMs)
 				time.Sleep(time.Millisecond * time.Duration(sleepMs))
 			} else {
 				// If it's not a retry error, it's some other sort of
