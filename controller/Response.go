@@ -10,6 +10,10 @@ func _RespondWithERROR(w http.ResponseWriter, code int, msg string) {
 	_RespondWithJSON(w, code, msg)
 }
 
+func _RespondWithArrayERROR(w http.ResponseWriter, code int, msg []string) {
+	_RespondWithJSON(w, code, msg)
+}
+
 func _RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, err := json.Marshal(payload)
 

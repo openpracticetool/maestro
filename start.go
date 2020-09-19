@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
 	"github.com/openpracticetool/maestro/config"
 	"github.com/openpracticetool/maestro/controller"
 	"github.com/openpracticetool/maestro/repository"
@@ -13,6 +14,8 @@ import (
 
 var c = config.Config{}
 var database = repository.Database{}
+
+var db *gorm.DB
 
 //Const
 const (
@@ -28,7 +31,7 @@ func init() {
 	database.Server = c.Server
 	database.LogMode = c.LogMode
 
-	//database.Connect()
+	db = database.Connect()
 }
 
 /*******
@@ -54,6 +57,9 @@ func newRouter() *mux.Router {
  *******/
 func addRouter(router *mux.Router) {
 
+	sc := controller.NewSessionController(db)
+	wc := controller.NewWorkspaceController(db)
+
 	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -65,15 +71,10 @@ func addRouter(router *mux.Router) {
 	subRouter := router.PathPrefix("/maestro/api").Subrouter()
 
 	//Add subrouter workspace
-	subRouter.HandleFunc("/v1/workspace", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		// an example API handler
-		json.NewEncoder(w).Encode(map[string]bool{"ok": true})
-	}).Methods("GET")
+	subRouter.HandleFunc("/v1/workspaces", wc.SaveWorkspace).Methods("POST")
 
 	//Add subrouter session
-	subRouter.HandleFunc("/v1/session", controller.SaveSession).Methods("GET")
+	subRouter.HandleFunc("/v1/sessions", sc.SaveSession).Methods("POST")
 }
 
 /*******
