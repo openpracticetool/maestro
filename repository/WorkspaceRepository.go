@@ -93,3 +93,21 @@ func (wr *WorkspaceRepository) FindWorkspaceByCreatedBy(createdBy string) ([]mod
 	err := converter.ConverterInterfaceTOStruct(db.Value, &workspaces)
 	return workspaces, err
 }
+
+// FindWorkspaceLikeCreatedBy ::: find the workspaces like user creation
+func (wr *WorkspaceRepository) FindWorkspaceLikeCreatedBy(createBy string) ([]model.Workspace, error) {
+	// initializes an array
+	var workspaces = []model.Workspace{}
+
+	// consulting in the database with the createdby parameter
+	db := wr.db.Where("created_by = ?", createBy+"%").Find(&workspaces)
+
+	// check with returned some error of procedure
+	if db.Error != nil {
+		return workspaces, db.Error
+	}
+
+	// convert the value returned to db for an array of workspace
+	err := converter.ConverterInterfaceTOStruct(db.Value, &workspaces)
+	return workspaces, err
+}

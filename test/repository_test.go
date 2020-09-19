@@ -22,18 +22,21 @@ func init() {
 	db = database.Connect()
 }
 
+// TestDBConnection ::: check if the connection return some error
 func TestDBConnection(t *testing.T) {
 	if db.Error != nil {
 		t.Error("Error to connect in database")
 	}
 }
 
+//TestPingDatabse ::: execute a ping in database to test the connection
 func TestPingDatabse(t *testing.T) {
 	if err := db.DB().Ping(); err != nil {
 		t.Error("Erro to ping database")
 	}
 }
 
+// TestSaveWorkspace save a workspace in database
 func TestSaveWorkspace(t *testing.T) {
 	// defines the workspace to save
 	var model = model.Workspace{
@@ -48,13 +51,17 @@ func TestSaveWorkspace(t *testing.T) {
 
 	// Initilize a repository with a connection of database
 	wr := repository.NewWorkspaceRepository(db)
+
+	// Save the workspace in database
 	workspace, err := wr.SaveWorkspace(model)
 
+	// check if the procedure return some error
 	if err != nil && workspace.ID > 0 {
 		t.Fail()
 	}
 }
 
+// TestUpdateWorkspace :::
 func TestUpdateWorkspace(t *testing.T) {
 	var ID = workspace.ID
 	// Initilize a repository with a connection of database
@@ -89,10 +96,12 @@ func TestUpdateWorkspace(t *testing.T) {
 	}
 }
 
+// TestFindWorkspaceByCreatedBy :::
 func TestFindWorkspaceByCreatedBy(t *testing.T) {
 	// Initilize a repository with a connection of database
 	wr := repository.NewWorkspaceRepository(db)
 
+	// find workspaces by user creation
 	workspaces, err := wr.FindWorkspaceByCreatedBy("lhsribas")
 
 	if err != nil || len(workspaces) == 0 {
@@ -100,8 +109,8 @@ func TestFindWorkspaceByCreatedBy(t *testing.T) {
 	}
 }
 
+// TestFindWorkspaceByID :::
 func TestFindWorkspaceByID(t *testing.T) {
-	var ID int
 	// Initilize a repository with a connection of database
 	wr := repository.NewWorkspaceRepository(db)
 
@@ -110,27 +119,46 @@ func TestFindWorkspaceByID(t *testing.T) {
 
 	// Select the first workspace and get your ID
 	for _, v := range workspaces {
-		ID = v.ID
+		// Find a workspace by a specific ID
+		workspace, err := wr.FindWorkspaceByID(v.ID)
+
+		// Verify if the test are ok
+		if err != nil || workspace.ID != v.ID {
+			t.Fail()
+		}
 		break
 	}
-	// Find a workspace by a specific ID
-	workspace, err := wr.FindWorkspaceByID(ID)
+}
 
-	// Verify if the test are ok
-	if err != nil || workspace.ID != ID {
+// TestDeleteWorkspaceByID :::
+func TestDeleteWorkspaceByID(t *testing.T) {
+	// initialize a repository with database connection
+	wr := repository.NewWorkspaceRepository(db)
+
+	// find the workspace like user creation
+	workspaces, err := wr.FindWorkspaceLikeCreatedBy("lhsribas")
+
+	// check if the operation return some error
+	if err != nil {
 		t.Fail()
+	}
+
+	// iterate the results and delete of database
+	for _, v := range workspaces {
+		// delete all workspaces created
+		if err := wr.DeleteWorkspace(v.ID); err != nil {
+			t.Fail()
+		}
 	}
 }
 
-func TestDeleteWorkspaceByID(t *testing.T) {
-
-}
-
+// TestSaveSession :::
 func TestSaveSession(t *testing.T) {
+	// initialize a repository with database connection
 	sr := repository.NewSessionRespository(db)
 
 	var model = model.Session{
-		IDWorkspace: workspace.ID,
+		IDWorkspace: 123456789,
 		Description: "Este é um exmplo de teste para criação de uma seção",
 		Name:        "Lean Coffee table",
 		UpdatedAt:   time.Now(),
@@ -148,21 +176,102 @@ func TestSaveSession(t *testing.T) {
 	}
 }
 
+// TestUpdateSession :::
 func TestUpdateSession(t *testing.T) {
-	repository.NewSessionRespository(db)
+	// initialize a repository with database connection
+	sr := repository.NewSessionRespository(db)
 
+	// find sessions by id of workspace
+	sessions, err := sr.FindSessionByWorkspaceID(123456789)
+
+	// check if return some error
+	if err != nil {
+		t.Fail()
+	}
+
+	// iterate the sessions and select the first
+	for _, v := range sessions {
+		session = v
+		break
+	}
+
+	session.Description = "Novo tema para discutir sobre a alteração das informações"
+	session.Name = "Test Update"
+	session.UpdatedAt = time.Now()
+	session.UpdatedBY = "lhsribas2"
+
+	// update the session
+	response, err := sr.UpdateSession(session)
+
+	// compare the fields with information returned of database
+	if err != nil ||
+		session.ID != response.ID ||
+		response.Name != session.Name ||
+		response.Description != session.Description ||
+		response.UpdatedBY != session.UpdatedBY {
+
+		t.Fail()
+	}
 }
 
+// TestFindSessionByID :::
 func TestFindSessionByID(t *testing.T) {
-	repository.NewSessionRespository(db)
+	// initialize a repository with database connection
+	sr := repository.NewSessionRespository(db)
 
+	// find session by id of workspace
+	sessions, err := sr.FindSessionByWorkspaceID(123456789)
+
+	// check if the procedure return some error
+	if err != nil {
+		t.Fail()
+	}
+
+	// iterate the sessions and select the first
+	for _, v := range sessions {
+		// find session by id
+		session, err := sr.FindSessionByID(v.ID)
+
+		// check if the procedure return some error
+		if err != nil || session.ID <= 0 {
+			t.Fail()
+		}
+
+		break
+	}
 }
 
+// TestFindSessionByWorkspaceID :::
 func TestFindSessionByWorkspaceID(t *testing.T) {
-	repository.NewSessionRespository(db)
+	// initialize a repository with database connection
+	sr := repository.NewSessionRespository(db)
 
+	// find the sessions by id of workspace
+	sessions, err := sr.FindSessionByWorkspaceID(123456789)
+
+	if err != nil || len(sessions) <= 0 {
+		t.Fail()
+	}
 }
 
+// TestDeleteSessionID :::
 func TestDeleteSessionID(t *testing.T) {
+	// initialize a repository with database connection
+	sr := repository.NewSessionRespository(db)
 
+	// find the sessions by id of workspace
+	sessions, err := sr.FindSessionByWorkspaceID(123456789)
+
+	// check if the procedure return some error
+	if err != nil {
+		t.Fail()
+	}
+
+	// iterate the session
+	for _, v := range sessions {
+		// delete all sessions created
+		if err := sr.DeleteSession(v.ID); err != nil {
+			t.Fail()
+		}
+	}
 }

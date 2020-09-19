@@ -52,7 +52,8 @@ func (sr *SessionRepository) UpdateSession(session model.Session) (model.Session
 }
 
 // DeleteSession ::: delete the Session data in database
-func (sr *SessionRepository) DeleteSession(session model.Session, ID int) error {
+func (sr *SessionRepository) DeleteSession(ID int) error {
+	var session = model.Session{}
 	// delete a session of database
 	db := sr.db.Delete(&session, ID)
 
