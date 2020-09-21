@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/go-playground/validator"
+	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/openpracticetool/maestro/model"
 	"github.com/openpracticetool/maestro/repository"
@@ -26,7 +28,7 @@ func NewWorkspaceController(db *gorm.DB) *WorkspaceController {
 	}
 }
 
-//SaveWorkspace save workspace in database
+// SaveWorkspace save workspace in database
 func (wc *WorkspaceController) SaveWorkspace(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
@@ -60,7 +62,6 @@ func (wc *WorkspaceController) SaveWorkspace(w http.ResponseWriter, r *http.Requ
 		// Send the error to requester
 		_RespondWithArrayERROR(w, http.StatusBadRequest, wc.message)
 	}
-
 	// set date
 	workspace.CreatedAt = time.Now()
 
@@ -78,14 +79,74 @@ func (wc *WorkspaceController) SaveWorkspace(w http.ResponseWriter, r *http.Requ
 	_RespondWithJSON(w, http.StatusOK, workspace)
 }
 
-//DeleteWorkspace delete workspace of database
+// DeleteWorkspace delete workspace of database
 func (wc *WorkspaceController) DeleteWorkspace(w http.ResponseWriter, r *http.Request) {}
 
-//UpdateWorkspace update workspace in database
+// UpdateWorkspace update workspace in database
 func (wc *WorkspaceController) UpdateWorkspace(w http.ResponseWriter, r *http.Request) {}
 
-//FindWorkspaceByID find workspace by id
-func (wc *WorkspaceController) FindWorkspaceByID(w http.ResponseWriter, r *http.Request) {}
+// FindWorkspaceByID find workspace by id
+func (wc *WorkspaceController) FindWorkspaceByID(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 
-//FindWorkspaceByUserCreation find workspace by user creation
-func FindWorkspaceByUserCreation(w http.ResponseWriter, r *http.Request) {}
+	// get the parameters of request
+	parameters := mux.Vars(r)
+
+	workspaceID, err := strconv.Atoi(parameters["id_workspace"])
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	if workspaceID > 0 {
+		// initilize the workspace repository
+		wr := repository.NewWorkspaceRepository(wc.db)
+
+		// find a workspace by user creation
+		workspace, err := wr.FindWorkspaceByID(workspaceID)
+
+		if err != nil {
+			// print the log in console
+			log.Println(err)
+			// send the error to requester
+			_RespondWithERROR(w, http.StatusInternalServerError, "Error to find workspace in database.")
+		}
+		// send the information to requester
+		_RespondWithJSON(w, http.StatusOK, workspace)
+	} else {
+		_RespondWithERROR(w, http.StatusBadRequest, "Invalid parameters!")
+	}
+}
+
+// FindWorkspaceByCreatedBy find workspace by user creation
+func (wc *WorkspaceController) FindWorkspaceByCreatedBy(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	// get the parameters of request
+	parameters := mux.Vars(r)
+
+	//
+	createdBy := parameters["created_by"]
+
+	if createdBy != "" {
+		// initilize the workspace repository
+		wr := repository.NewWorkspaceRepository(wc.db)
+
+		// find a workspace by user creation
+		workspaces, err := wr.FindWorkspaceByCreatedBy(createdBy)
+
+		if err != nil {
+			// print the log in console
+			log.Println(err)
+			// send the error to requester
+			_RespondWithERROR(w, http.StatusInternalServerError, "Error to find workspace in database.")
+		}
+		// send the information to requester
+		_RespondWithJSON(w, http.StatusOK, workspaces)
+	} else {
+		_RespondWithERROR(w, http.StatusBadRequest, "Invalid parameters!")
+	}
+}
+
+// FindWorkspaceLikeCreatedBy find workspace by user creation
+func (wc *WorkspaceController) FindWorkspaceLikeCreatedBy(w http.ResponseWriter, r *http.Request) {}

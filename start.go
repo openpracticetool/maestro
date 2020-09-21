@@ -72,6 +72,8 @@ func addRouter(router *mux.Router) {
 
 	//Add subrouter workspace
 	subRouter.HandleFunc("/v1/workspaces", wc.SaveWorkspace).Methods("POST")
+	subRouter.HandleFunc("/v1/workspaces/createdby/{created_by}", wc.FindWorkspaceByCreatedBy).Methods("GET")
+	subRouter.HandleFunc("/v1/workspaces/workspaceid/{id_workspace}", wc.FindWorkspaceByID).Methods("GET")
 
 	//Add subrouter session
 	subRouter.HandleFunc("/v1/sessions", sc.SaveSession).Methods("POST")
